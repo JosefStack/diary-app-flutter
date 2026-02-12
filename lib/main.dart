@@ -8,13 +8,14 @@ import 'providers/auth_provider.dart';
 import 'providers/entry_provider.dart';
 import 'screens/auth_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'supabase_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://ygocvxeajyqqbrxujzlf.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlnb2N2eGVhanlxcWJyeHVqemxmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4NDc3MjgsImV4cCI6MjA4NjQyMzcyOH0.K7ydlYMgMiYN9saXtDLxeHVOmGUlnVI56PXhUwWjgig',
+    url: SupabaseConfig.url,
+    anonKey: SupabaseConfig.anonKey,
   );
 
   runApp(
