@@ -28,7 +28,7 @@ class _AuthScreenState extends State<AuthScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Lumina',
+                'Memoir',
                 style: GoogleFonts.indieFlower(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 70)
               ),
               const SizedBox(height: 5),
