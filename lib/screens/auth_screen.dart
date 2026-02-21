@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
 
@@ -28,23 +29,20 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               Text(
                 'Lumina',
-                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 48,
-                    ),
+                style: GoogleFonts.indieFlower(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 70)
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 5),
               Text(
                 'Welcome to your safe space.',
-                style: TextStyle(color: Colors.grey[800]),
+                 style: GoogleFonts.indieFlower(color: Colors.grey,fontWeight: FontWeight.bold,fontSize: 20)
               ),
-              const SizedBox(height: 48),
+              const SizedBox(height: 30),
               Container(
+                
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.black,
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(25),
                 ),
                 child: Column(
                   children: [
@@ -96,7 +94,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               },
                         style: ElevatedButton.styleFrom(
                         
-                          backgroundColor: const Color(0xFF10B981),
+                          backgroundColor:  Colors.teal[400],
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -110,12 +108,12 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               TextButton(
                 onPressed: () => setState(() => _isLogin = !_isLogin),
                 child: Text(
                   _isLogin ? "New here? Create an account" : "Have an account? Sign in",
-                  style: const TextStyle(color: Color(0xFF10B981)),
+                   style: GoogleFonts.indieFlower(color: Colors.teal[500],fontWeight: FontWeight.bold,fontSize: 15)
                 ),
               ),
             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lumina/screens/entry_display_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
@@ -85,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           context,
           MaterialPageRoute(builder: (_) => const EntryEditorScreen()),
         ),
-        backgroundColor: const Color(0xFF10B981),
+        backgroundColor: Colors.teal[200],
         child: const Icon(Icons.add, size: 30),
       ),
     );
@@ -101,7 +102,7 @@ class _EntryCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (_) => EntryEditorScreen(entry: entry)),
+        MaterialPageRoute(builder: (_) => EntryDisplayScreen(entry: entry)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
