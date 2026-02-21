@@ -19,6 +19,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final auth = Provider.of<AuthProvider>(context);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
@@ -29,20 +30,20 @@ class _AuthScreenState extends State<AuthScreen> {
                 'Lumina',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.black,
                       fontSize: 48,
                     ),
               ),
               const SizedBox(height: 8),
               Text(
                 'Welcome to your safe space.',
-                style: TextStyle(color: Colors.grey[400]),
+                style: TextStyle(color: Colors.grey[800]),
               ),
               const SizedBox(height: 48),
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1F2937),
+                  color: Colors.black,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
@@ -60,7 +61,9 @@ class _AuthScreenState extends State<AuthScreen> {
                       obscureText: true,
                       decoration: const InputDecoration(
                         labelText: 'Password',
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          
+                        ),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -68,6 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       width: double.infinity,
                       height: 54,
                       child: ElevatedButton(
+                        
                         onPressed: auth.isLoading
                             ? null
                             : () async {
@@ -91,6 +95,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 }
                               },
                         style: ElevatedButton.styleFrom(
+                        
                           backgroundColor: const Color(0xFF10B981),
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(

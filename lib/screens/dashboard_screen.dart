@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/auth_provider.dart';
@@ -25,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Lumina', style: TextStyle(fontWeight: FontWeight.bold,color: Colors.black)),
+        title:  Text('Memoir', style: GoogleFonts.shadowsIntoLight(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 40 )),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
@@ -45,11 +46,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.edit_note, size: 64, color: Colors.grey[600]),
+                  Icon(Icons.edit_note, size: 64, color: Colors.grey[500]),
                   const SizedBox(height: 16),
-                  Text('Your safe space is empty.', style: TextStyle(color: Colors.grey[400])),
+                  Text('Your safe space is empty.', style: GoogleFonts.indieFlower(color: Colors.grey[900])),
                   const SizedBox(height: 8),
-                  const Text('Tap + to start journaling.'),
+                   Text('Tap + to start journaling.', style: GoogleFonts.indieFlower(color: Colors.grey[900])),
                 ],
               ),
             );
@@ -72,18 +73,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left:10,bottom: 20, top: 8),
-                    child: Text(
-                      month.toUpperCase(),
-                      style: const TextStyle(
-                        color: Color(0xFF10B981),
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ),
                   ...entries.map((entry) => _EntryCard(entry: entry)),
                 ],
               );
@@ -179,14 +168,14 @@ class _EntryCard extends StatelessWidget {
                       children: [
                         Text(
                           entry.title.isEmpty ? 'Untitled' : entry.title,
-                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold,color: Colors.black),
+                          style: GoogleFonts.indieFlower(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           entry.content,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.grey, fontSize: 13),
+                          style: GoogleFonts.indieFlower(color: Colors.grey[500], fontSize: 13,fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 12),
                         Row(
