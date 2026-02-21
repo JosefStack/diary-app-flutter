@@ -98,7 +98,7 @@ class _EntryEditorScreenState extends State<EntryEditorScreen> {
                   TextField(
                     controller: _contentController,
                     maxLines: null,
-                    style: const TextStyle(fontSize: 18, height: 1.6, color: Color(0xFFCBD5E1)),
+                    style: GoogleFonts.indieFlower(fontSize: 30, height: 1.6, color: Colors.black),
                     decoration:  InputDecoration(
                       hintText: 'Start writing...',
                       hintStyle: GoogleFonts.indieFlower(color: Colors.grey),
