@@ -8,6 +8,7 @@ import '../providers/entry_provider.dart';
 import '../models/diary_entry.dart';
 import 'entry_editor_screen.dart';
 import '../utils/ripple_page_route.dart';
+import '../widgets/glass_calendar_modal.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -46,7 +47,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.black),
+            icon: const Icon(Icons.calendar_month, color: Color(0xFF1E293B)),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => const GlassCalendarModal(),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Color(0xFF1E293B)),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],

@@ -21,7 +21,7 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
   Widget build(BuildContext context) {
     final entryProvider = context.watch<EntryProvider>();
     final entryDates = entryProvider.entryDates;
-    const highlightColor = Color(0xFFFF414D); // Vibrant Red from image
+    const highlightColor = Color(0xFFFF4D4D); // Vibrant Red from image
 
     return Center(
       child: Container(
@@ -29,10 +29,10 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withOpacity(0.08),
               blurRadius: 40,
               offset: const Offset(0, 10),
             ),
@@ -44,7 +44,7 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header matching image
+              // Pixel-perfect Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -54,18 +54,19 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                       DateFormat('MMMM yyyy').format(_focusedDay),
                       style: GoogleFonts.inter(
                         color: const Color(0xFF1E293B),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
                       ),
                     ),
                   ),
                   Row(
                     children: [
                       IconButton(
+                        visualDensity: VisualDensity.compact,
                         icon: const Icon(
                           Icons.chevron_left,
-                          color: Color(0xFF64748B),
-                          size: 28,
+                          color: Color(0xFF1E293B),
+                          size: 24,
                         ),
                         onPressed: () => setState(() {
                           _focusedDay = DateTime(
@@ -75,10 +76,11 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                         }),
                       ),
                       IconButton(
+                        visualDensity: VisualDensity.compact,
                         icon: const Icon(
                           Icons.chevron_right,
-                          color: Color(0xFF64748B),
-                          size: 28,
+                          color: Color(0xFF1E293B),
+                          size: 24,
                         ),
                         onPressed: () => setState(() {
                           _focusedDay = DateTime(
@@ -91,89 +93,65 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               TableCalendar(
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.now().add(const Duration(days: 365)),
                 focusedDay: _focusedDay,
+                startingDayOfWeek: StartingDayOfWeek.monday,
                 headerVisible: false,
-                rowHeight: 52,
-                daysOfWeekHeight: 40,
+                rowHeight: 56,
+                daysOfWeekHeight: 48,
                 selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                enabledDayPredicate: (day) {
-                  final normalizedDay = DateTime(day.year, day.month, day.day);
-                  return entryDates.contains(normalizedDay) ||
-                      isSameDay(day, DateTime.now());
-                },
                 daysOfWeekStyle: DaysOfWeekStyle(
                   weekdayStyle: GoogleFonts.inter(
-                    color: const Color(0xFF334155),
+                    color: const Color(0xFF1E293B),
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
                   weekendStyle: GoogleFonts.inter(
-                    color: const Color(0xFF334155),
+                    color: const Color(0xFF1E293B),
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
                 ),
-                calendarStyle: CalendarStyle(
-                  defaultTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFF1E293B),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  weekendTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFF1E293B),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                  todayTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFF1E293B),
-                    fontWeight: FontWeight.w500,
-                  ),
-                  todayDecoration:
-                      const BoxDecoration(), // Remove default today highlight
-                  selectedTextStyle: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  selectedDecoration: const BoxDecoration(
+                calendarStyle: const CalendarStyle(
+                  todayDecoration: BoxDecoration(),
+                  selectedDecoration: BoxDecoration(
                     color: highlightColor,
                     shape: BoxShape.circle,
                   ),
-                  outsideTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFFCBD5E1),
-                    fontSize: 16,
-                  ),
-                  disabledTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFFF1F5F9),
-                    fontSize: 16,
-                  ),
                 ),
                 calendarBuilders: CalendarBuilders(
-                  markerBuilder: (context, date, events) {
+                  defaultBuilder: (context, day, focusedDay) {
                     final normalizedDay = DateTime(
-                      date.year,
-                      date.month,
-                      date.day,
+                      day.year,
+                      day.month,
+                      day.day,
                     );
-                    if (entryDates.contains(normalizedDay) &&
-                        !isSameDay(_selectedDay, date)) {
-                      return Positioned(
-                        bottom: 8,
-                        child: Container(
-                          width: 4,
-                          height: 4,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF94A3B8),
-                            shape: BoxShape.circle,
-                          ),
+                    final hasEntry = entryDates.contains(normalizedDay);
+                    return _buildDayCell(day, hasEntry, false);
+                  },
+                  outsideBuilder: (context, day, focusedDay) {
+                    return _buildDayCell(day, false, true);
+                  },
+                  selectedBuilder: (context, day, focusedDay) {
+                    return Container(
+                      margin: const EdgeInsets.all(6),
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        color: highlightColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        '${day.day}',
+                        style: GoogleFonts.inter(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
                         ),
-                      );
-                    }
-                    return null;
+                      ),
+                    );
                   },
                 ),
                 onDaySelected: (selectedDay, focusedDay) {
@@ -199,21 +177,23 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                   }
                 },
               ),
-              if (entryDates.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: Text(
-                    "START JOURNALING TO SEE DATA",
-                    style: GoogleFonts.inter(
-                      color: const Color(0xFF94A3B8),
-                      fontSize: 10,
-                      letterSpacing: 1.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDayCell(DateTime day, bool hasEntry, bool isOutside) {
+    return Center(
+      child: Text(
+        '${day.day}',
+        style: GoogleFonts.inter(
+          color: const Color(
+            0xFF1E293B,
+          ).withOpacity(isOutside ? 0.1 : (hasEntry ? 1.0 : 0.4)),
+          fontWeight: hasEntry ? FontWeight.bold : FontWeight.w500,
+          fontSize: 16,
         ),
       ),
     );

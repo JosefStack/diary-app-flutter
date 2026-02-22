@@ -7,8 +7,8 @@ class RipplePageRoute extends PageRouteBuilder {
   RipplePageRoute({required this.widget, required this.center})
     : super(
         pageBuilder: (context, animation, secondaryAnimation) => widget,
-        transitionDuration: const Duration(milliseconds: 700),
-        reverseTransitionDuration: const Duration(milliseconds: 700),
+        transitionDuration: const Duration(milliseconds: 400),
+        reverseTransitionDuration: const Duration(milliseconds: 400),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return RippleTransition(
             animation: animation,
