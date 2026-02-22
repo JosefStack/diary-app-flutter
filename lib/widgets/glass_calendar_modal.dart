@@ -14,7 +14,6 @@ class GlassCalendarModal extends StatefulWidget {
 }
 
 class _GlassCalendarModalState extends State<GlassCalendarModal> {
-  CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -22,137 +21,135 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
   Widget build(BuildContext context) {
     final entryProvider = context.watch<EntryProvider>();
     final entryDates = entryProvider.entryDates;
-    // Using a reddish accent as requested
-    const highlightColor = Color(0xFF4F70F0);
+    const highlightColor = Color(0xFFFF414D); // Vibrant Red from image
 
     return Center(
       child: Container(
-        width: 350,
-        height: 420, // Adjusted height for custom header
+        width: 380,
         margin: const EdgeInsets.symmetric(horizontal: 20),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 30,
-              offset: const Offset(0, 15),
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 40,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
         child: Material(
           color: Colors.transparent,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Custom Header
+              // Header matching image
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _HeaderButton(
-                    icon: Icons.chevron_left,
-                    onPressed: () {
-                      setState(() {
-                        _focusedDay = DateTime(
-                          _focusedDay.year,
-                          _focusedDay.month - 1,
-                        );
-                      });
-                    },
-                  ),
-                  Text(
-                    DateFormat('MMMM yyyy').format(_focusedDay),
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      DateFormat('MMMM yyyy').format(_focusedDay),
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFF1E293B),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
-                  _HeaderButton(
-                    icon: Icons.chevron_right,
-                    onPressed: () {
-                      setState(() {
-                        _focusedDay = DateTime(
-                          _focusedDay.year,
-                          _focusedDay.month + 1,
-                        );
-                      });
-                    },
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.chevron_left,
+                          color: Color(0xFF64748B),
+                          size: 28,
+                        ),
+                        onPressed: () => setState(() {
+                          _focusedDay = DateTime(
+                            _focusedDay.year,
+                            _focusedDay.month - 1,
+                          );
+                        }),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.chevron_right,
+                          color: Color(0xFF64748B),
+                          size: 28,
+                        ),
+                        onPressed: () => setState(() {
+                          _focusedDay = DateTime(
+                            _focusedDay.year,
+                            _focusedDay.month + 1,
+                          );
+                        }),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-              const Divider(height: 1, thickness: 1, color: Color(0xFFF1F5F9)),
-              const SizedBox(height: 8),
+              const SizedBox(height: 24),
               TableCalendar(
                 firstDay: DateTime.utc(2020, 1, 1),
                 lastDay: DateTime.now().add(const Duration(days: 365)),
                 focusedDay: _focusedDay,
-                calendarFormat: _calendarFormat,
-                availableGestures: AvailableGestures.all,
-                headerVisible: false, // Using custom header
-                sixWeekMonthsEnforced: false,
-                rowHeight: 48,
-                daysOfWeekHeight: 32,
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDay, day);
-                },
+                headerVisible: false,
+                rowHeight: 52,
+                daysOfWeekHeight: 40,
+                selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
                 enabledDayPredicate: (day) {
                   final normalizedDay = DateTime(day.year, day.month, day.day);
-                  return entryDates.contains(normalizedDay) &&
-                      day.isBefore(DateTime.now().add(const Duration(days: 1)));
+                  return entryDates.contains(normalizedDay) ||
+                      isSameDay(day, DateTime.now());
                 },
                 daysOfWeekStyle: DaysOfWeekStyle(
                   weekdayStyle: GoogleFonts.inter(
-                    color: const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    color: const Color(0xFF334155),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
                   ),
                   weekendStyle: GoogleFonts.inter(
-                    color: const Color(0xFF94A3B8),
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+                    color: const Color(0xFF334155),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
                   ),
                 ),
                 calendarStyle: CalendarStyle(
                   defaultTextStyle: GoogleFonts.inter(
                     color: const Color(0xFF1E293B),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
                   ),
                   weekendTextStyle: GoogleFonts.inter(
                     color: const Color(0xFF1E293B),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
                   ),
-                  outsideTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFFCBD5E1),
-                    fontSize: 14,
+                  todayTextStyle: GoogleFonts.inter(
+                    color: const Color(0xFF1E293B),
+                    fontWeight: FontWeight.w500,
                   ),
-                  disabledTextStyle: GoogleFonts.inter(
-                    color: const Color(0xFFE2E8F0),
-                    fontSize: 14,
-                  ),
+                  todayDecoration:
+                      const BoxDecoration(), // Remove default today highlight
                   selectedTextStyle: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    fontSize: 16,
                   ),
-                  todayTextStyle: const TextStyle(
+                  selectedDecoration: const BoxDecoration(
                     color: highlightColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                    shape: BoxShape.circle,
                   ),
-                  selectedDecoration: BoxDecoration(
-                    color: highlightColor,
-                    borderRadius: BorderRadius.circular(12),
+                  outsideTextStyle: GoogleFonts.inter(
+                    color: const Color(0xFFCBD5E1),
+                    fontSize: 16,
                   ),
-                  todayDecoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(color: highlightColor, width: 2),
-                    borderRadius: BorderRadius.circular(12),
+                  disabledTextStyle: GoogleFonts.inter(
+                    color: const Color(0xFFF1F5F9),
+                    fontSize: 16,
                   ),
                 ),
                 calendarBuilders: CalendarBuilders(
@@ -162,14 +159,15 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                       date.month,
                       date.day,
                     );
-                    if (entryDates.contains(normalizedDay)) {
+                    if (entryDates.contains(normalizedDay) &&
+                        !isSameDay(_selectedDay, date)) {
                       return Positioned(
-                        bottom: 4,
+                        bottom: 8,
                         child: Container(
                           width: 4,
                           height: 4,
                           decoration: const BoxDecoration(
-                            color: highlightColor,
+                            color: Color(0xFF94A3B8),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -184,66 +182,39 @@ class _GlassCalendarModalState extends State<GlassCalendarModal> {
                     _focusedDay = focusedDay;
                   });
 
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DayEntriesScreen(date: selectedDay),
-                    ),
+                  final normalizedDay = DateTime(
+                    selectedDay.year,
+                    selectedDay.month,
+                    selectedDay.day,
                   );
-                },
-                onPageChanged: (focusedDay) {
-                  setState(() {
-                    _focusedDay = focusedDay;
-                  });
+                  if (entryDates.contains(normalizedDay)) {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            DayEntriesScreen(date: selectedDay),
+                      ),
+                    );
+                  }
                 },
               ),
               if (entryDates.isEmpty)
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 16.0),
                   child: Text(
-                    "No entries found",
+                    "START JOURNALING TO SEE DATA",
                     style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF94A3B8),
+                      fontSize: 10,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _HeaderButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-
-  const _HeaderButton({required this.icon, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            spreadRadius: 1,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: const Color(0xFFCBD5E1), size: 24),
-        onPressed: onPressed,
-        padding: EdgeInsets.zero,
-        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
       ),
     );
   }

@@ -20,17 +20,42 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String email, String password, String name) async {
+    if (name.trim().isEmpty) {
+      _error = "Please enter your name.";
+      notifyListeners();
+      return;
+    }
+
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (!emailRegex.hasMatch(email)) {
+      _error = "Please enter a valid email address.";
+      notifyListeners();
+      return;
+    }
+
+    if (password.length < 6) {
+      _error = "Password must be at least 6 characters.";
+      notifyListeners();
+      return;
+    }
+
     _loading = true;
     _error = null;
     notifyListeners();
     try {
-      final response = await _supabase.auth.signUp(email: email, password: password);
+      final response = await _supabase.auth.signUp(
+        email: email,
+        password: password,
+        data: {'display_name': name},
+      );
       if (response.user != null && response.session == null) {
         _error = "Account created! Please check your email to confirm.";
       }
     } catch (e) {
-      _error = e.toString();
+      _error = e.toString().contains('already registered')
+          ? "This email is already in use."
+          : e.toString();
     } finally {
       _loading = false;
       notifyListeners();

@@ -7,6 +7,7 @@ import '../providers/auth_provider.dart';
 import '../providers/entry_provider.dart';
 import '../models/diary_entry.dart';
 import 'entry_editor_screen.dart';
+import '../utils/ripple_page_route.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -16,10 +17,16 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  Offset _tapPosition = Offset.zero;
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() => context.read<EntryProvider>().fetchEntries());
+  }
+
+  void _recordTapPosition(TapDownDetails details) {
+    _tapPosition = details.globalPosition;
   }
 
   @override
@@ -27,11 +34,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title:  Text('Memoir', style: GoogleFonts.shadowsIntoLight(fontWeight: FontWeight.bold,color: Colors.black,fontSize: 40 )),
+        title: Text(
+          'Memoir',
+          style: GoogleFonts.shadowsIntoLight(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            fontSize: 40,
+          ),
+        ),
         backgroundColor: Colors.white,
+        elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout,color: Colors.black,),
+            icon: const Icon(Icons.logout, color: Colors.black),
             onPressed: () => context.read<AuthProvider>().signOut(),
           ),
         ],
@@ -49,9 +64,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   Icon(Icons.edit_note, size: 64, color: Colors.grey[500]),
                   const SizedBox(height: 16),
-                  Text('Your safe space is empty.', style: GoogleFonts.indieFlower(color: Colors.grey[900])),
+                  Text(
+                    'Your safe space is empty.',
+                    style: GoogleFonts.indieFlower(color: Colors.grey[900]),
+                  ),
                   const SizedBox(height: 8),
-                   Text('Tap + to start journaling.', style: GoogleFonts.indieFlower(color: Colors.grey[900])),
+                  Text(
+                    'Tap + to start journaling.',
+                    style: GoogleFonts.indieFlower(color: Colors.grey[900]),
+                  ),
                 ],
               ),
             );
@@ -74,7 +95,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...entries.map((entry) => _EntryCard(entry: entry)),
+                  ...entries.map(
+                    (entry) => _EntryCard(
+                      entry: entry,
+                      onTapDown: _recordTapPosition,
+                      onTap: () => Navigator.push(
+                        context,
+                        RipplePageRoute(
+                          center: _tapPosition,
+                          widget: EntryDisplayScreen(entry: entry),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               );
             },
@@ -95,15 +128,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 class _EntryCard extends StatelessWidget {
   final DiaryEntry entry;
-  const _EntryCard({required this.entry});
+  final Function(TapDownDetails) onTapDown;
+  final VoidCallback onTap;
+
+  const _EntryCard({
+    required this.entry,
+    required this.onTapDown,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => EntryDisplayScreen(entry: entry)),
-      ),
+      onTapDown: onTapDown,
+      onTap: onTap,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -111,7 +149,7 @@ class _EntryCard extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color:Colors.grey[100],
+              color: Colors.grey[100],
               borderRadius: BorderRadius.only(
                 topRight: Radius.circular(25),
                 bottomRight: Radius.circular(25),
@@ -139,18 +177,22 @@ class _EntryCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 15,),
+          SizedBox(width: 15),
           SizedBox(
             width: 300,
             child: Container(
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.all(15),
               decoration: BoxDecoration(
-                color: entry.mood=='Excited' ? Colors.yellow[100] 
-                : entry.mood=='Calm' ? Colors.blue[100] 
-                : entry.mood=='Peaceful' ? Colors.green[100] 
-                : entry.mood=='Sad' ? Colors.blueGrey[100] 
-                : Colors.red[100],
+                color: entry.mood == 'Excited'
+                    ? Colors.yellow[100]
+                    : entry.mood == 'Calm'
+                    ? Colors.blue[100]
+                    : entry.mood == 'Peaceful'
+                    ? Colors.green[100]
+                    : entry.mood == 'Sad'
+                    ? Colors.blueGrey[100]
+                    : Colors.red[100],
 
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(30),
@@ -161,34 +203,60 @@ class _EntryCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                
-                  const SizedBox(width:30),
+                  const SizedBox(width: 30),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           entry.title.isEmpty ? 'Untitled' : entry.title,
-                          style: GoogleFonts.indieFlower(fontSize: 20, fontWeight: FontWeight.bold,color: Colors.black),
+                          style: GoogleFonts.indieFlower(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           entry.content,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.indieFlower(color: Colors.grey[500], fontSize: 13,fontWeight: FontWeight.bold),
+                          style: GoogleFonts.indieFlower(
+                            color: Colors.grey[500],
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         Row(
                           children: [
-                            const Icon(Icons.access_time, size: 12, color: Colors.grey),
+                            const Icon(
+                              Icons.access_time,
+                              size: 12,
+                              color: Colors.grey,
+                            ),
                             const SizedBox(width: 4),
-                            Text(DateFormat('hh:mm a').format(entry.createdAt),
-                                style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                            Text(
+                              DateFormat('hh:mm a').format(entry.createdAt),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                              ),
+                            ),
                             const SizedBox(width: 12),
-                            const Icon(Icons.mood, size: 12, color: Colors.grey),
+                            const Icon(
+                              Icons.mood,
+                              size: 12,
+                              color: Colors.grey,
+                            ),
                             const SizedBox(width: 4),
-                            Text(entry.mood, style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                            Text(
+                              entry.mood,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Colors.grey,
+                              ),
+                            ),
                           ],
                         ),
                       ],
